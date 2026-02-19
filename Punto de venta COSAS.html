@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COSAS - Punto de Venta</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff6b6b;
+            --secondary: #4ecdc4;
+            --accent: #ffe66d;
+            --dark: #2f2f2f;
+            --light: #f7f7f7;
+            --glass: rgba(255, 255, 255, 0.2);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        nav {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        nav a:hover {
+            color: var(--primary);
+        }
+
+        main {
+            padding: 2rem;
+            flex-grow: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Glass Card Style */
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        h2 {
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #45b7af;
+            transform: translateY(-2px);
+        }
+
+        /* Form styling */
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.5);
+            outline: none;
+        }
+
+        /* Catalog Grid */
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background: #eee;
+        }
+
+        .product-info {
+            padding: 1rem;
+        }
+
+        .product-category {
+            font-size: 0.8rem;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .product-title {
+            font-weight: 600;
+            margin: 0.2rem 0;
+        }
+
+        .product-price {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        /* Login Overlay */
+        #login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .login-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+            width: 300px;
+        }
+
+        .pin-input {
+            width: 150px;
+            font-size: 2rem;
+            text-align: center;
+            letter-spacing: 5px;
+            margin: 1.5rem 0;
+            padding: 0.5rem;
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="login-overlay">
+        <div class="login-card">
+            <h1 class="logo">COSAS</h1>
+            <p>Ingresa el PIN de acceso</p>
+            <input type="password" id="pin" class="pin-input" maxlength="4" placeholder="****">
+            <button class="btn btn-primary" onclick="checkPin()">Entrar</button>
+        </div>
+    </div>
+
+    <header>
+        <div class="logo">COSAS POS</div>
+        <nav>
+            <a onclick="showSection('catalog')">Catálogo</a>
+            <a onclick="showSection('upload')">Subir Producto</a>
+            <a onclick="showSection('reports')">Reportes</a>
+        </nav>
+        <button class="btn btn-secondary" onclick="logout()">Salir</button>
+    </header>
+
+    <main>
+        <!-- Catalog Section -->
+        <section id="catalog" class="section active">
+            <h2>Catálogo de Juguetes</h2>
+            <div class="card">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <input type="text" id="search" placeholder="Buscar producto..." oninput="filterCatalog()">
+                </div>
+            </div>
+            <div id="catalog-list" class="catalog-grid">
+                <!-- Products will be injected here -->
+            </div>
+        </section>
+
+        <!-- Upload Section -->
+        <section id="upload" class="section">
+            <h2>Subir Nuevo Producto</h2>
+            <div class="card">
+                <form id="upload-form">
+                    <div class="form-group">
+                        <label>Fotografía del Producto</label>
+                        <input type="file" id="p-photo" accept="image/*" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nombre del Producto</label>
+                        <input type="text" id="p-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Precio</label>
+                        <input type="number" id="p-price" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Stock Inicial</label>
+                        <input type="number" id="p-stock" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Categoría</label>
+                        <select id="p-category" required>
+                            <option value="Bolsas">Bolsas</option>
+                            <option value="Plumones">Plumones</option>
+                            <option value="kpop">kpop</option>
+                            <option value="peluche">peluche</option>
+                            <option value="frazada">frazada</option>
+                            <option value="libretas">libretas</option>
+                            <option value="playeras">playeras</option>
+                            <option value="otros">otros</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar Producto</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Reports Section -->
+        <section id="reports" class="section">
+            <h2>Cierre y Reportes</h2>
+            <div class="card">
+                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                    <button class="btn btn-secondary" onclick="generateReport('daily')">Cierre Diario</button>
+                    <button class="btn btn-secondary" onclick="generateReport('weekly')">Semanal</button>
+                    <button class="btn btn-secondary" onclick="generateReport('monthly')">Mensual</button>
+                </div>
+                <div id="report-output"
+                    style="white-space: pre-wrap; font-family: monospace; background: #eee; padding: 1rem; border-radius: 8px;">
+                    Selecciona un reporte para visualizar...
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Data Structures
+        let products = JSON.parse(localStorage.getItem('cosas_products')) || [];
+        let sales = JSON.parse(localStorage.getItem('cosas_sales')) || [];
+        const AUTHORIZED_PIN = '1234'; // Default PIN
+
+        // Auth Logic
+        function checkPin() {
+            const pin = document.getElementById('pin').value;
+            if (pin === AUTHORIZED_PIN) {
+                document.getElementById('login-overlay').style.display = 'none';
+                sessionStorage.setItem('cosas_auth', 'true');
+                renderCatalog();
+            } else {
+                alert('PIN Incorrecto');
+            }
+        }
+
+        function logout() {
+            sessionStorage.removeItem('cosas_auth');
+            location.reload();
+        }
+
+        // Check auth on load
+        if (sessionStorage.getItem('cosas_auth') === 'true') {
+            document.getElementById('login-overlay').style.display = 'none';
+        }
+
+        // Navigation
+        function showSection(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            if (id === 'catalog') renderCatalog();
+        }
+
+        // Upload Logic
+        document.getElementById('upload-form').onsubmit = function (e) {
+            e.preventDefault();
+            const file = document.getElementById('p-photo').files[0];
+            const reader = new FileReader();
+
+            reader.onloadend = function () {
+                const newProduct = {
+                    id: Date.now(),
+                    name: document.getElementById('p-name').value,
+                    price: parseFloat(document.getElementById('p-price').value),
+                    stock: parseInt(document.getElementById('p-stock').value),
+                    category: document.getElementById('p-category').value,
+                    photo: reader.result
+                };
+
+                products.push(newProduct);
+                localStorage.setItem('cosas_products', JSON.stringify(products));
+                alert('Producto guardado con éxito');
+                e.target.reset();
+                showSection('catalog');
+            }
+
+            if (file) reader.readAsDataURL(file);
+        };
+
+        // Catalog Logic
+        function renderCatalog(filterData = products) {
+            const list = document.getElementById('catalog-list');
+            list.innerHTML = '';
+
+            filterData.filter(p => p.stock > 0).forEach(product => {
+                const div = document.createElement('div');
+                div.className = 'product-card';
+                div.innerHTML = `
+                    <img src="${product.photo}" class="product-img">
+                    <div class="product-info">
+                        <div class="product-category">${product.category}</div>
+                        <div class="product-title">${product.name}</div>
+                        <div class="product-price">$${product.price.toFixed(2)}</div>
+                        <div style="font-size: 0.8rem; margin: 0.5rem 0;">Stock: ${product.stock}</div>
+                        <button class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;" onclick="sellProduct(${product.id})">Vender</button>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function filterCatalog() {
+            const query = document.getElementById('search').value.toLowerCase();
+            const filtered = products.filter(p => p.name.toLowerCase().includes(query));
+            renderCatalog(filtered);
+        }
+
+        // Sales Logic
+        function sellProduct(id) {
+            const index = products.findIndex(p => p.id === id);
+            if (index !== -1 && products[index].stock > 0) {
+                products[index].stock--;
+
+                const sale = {
+                    date: new Date().toISOString(),
+                    productId: id,
+                    productName: products[index].name,
+                    price: products[index].price,
+                    category: products[index].category
+                };
+
+                sales.push(sale);
+                localStorage.setItem('cosas_products', JSON.stringify(products));
+                localStorage.setItem('cosas_sales', JSON.stringify(sales));
+
+                // Audio or Visual feedback
+                const btn = event.target;
+                const originalText = btn.innerText;
+                btn.innerText = '✅ ¡Vendido!';
+                btn.classList.add('btn-secondary');
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.classList.remove('btn-secondary');
+                    renderCatalog();
+                }, 1000);
+            }
+        }
+
+        // Reports Logic
+        function generateReport(type) {
+            const now = new Date();
+            let filteredSales = [];
+
+            if (type === 'daily') {
+                filteredSales = sales.filter(s => new Date(s.date).toDateString() === now.toDateString());
+            } else if (type === 'weekly') {
+                const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                filteredSales = sales.filter(s => new Date(s.date) > weekAgo);
+            } else if (type === 'monthly') {
+                filteredSales = sales.filter(s => {
+                    const d = new Date(s.date);
+                    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+                });
+            }
+
+            const total = filteredSales.reduce((acc, s) => acc + s.price, 0);
+            const byCategory = {};
+            filteredSales.forEach(s => {
+                byCategory[s.category] = (byCategory[s.category] || 0) + s.price;
+            });
+
+            // Find top category
+            let topCat = 'N/A';
+            let maxSales = 0;
+            for (const cat in byCategory) {
+                if (byCategory[cat] > maxSales) {
+                    maxSales = byCategory[cat];
+                    topCat = cat;
+                }
+            }
+
+            let output = `<b>REPORTE ${type.toUpperCase()}</b>\n`;
+            output += `--------------------------------\n`;
+            output += `Total de ventas: $${total.toFixed(2)}\n`;
+            output += `Objetos vendidos: ${filteredSales.length}\n`;
+            output += `Categoría estrella: ${topCat}\n`;
+            output += `--------------------------------\n\n`;
+            output += `<b>Desglose por categoría:</b>\n`;
+
+            for (const cat in byCategory) {
+                const barLength = Math.round((byCategory[cat] / (total || 1)) * 20);
+                const bar = '█'.repeat(barLength) + '░'.repeat(20 - barLength);
+                output += `${cat.padEnd(10)}: $${byCategory[cat].toFixed(2).padStart(8)} [${bar}]\n`;
+            }
+
+            document.getElementById('report-output').innerHTML = output.replace(/\n/g, '<br>');
+        }
+
+        // Initial render
+        if (sessionStorage.getItem('cosas_auth') === 'true') {
+            renderCatalog();
+        }
+    </script>
+</body>
+
+</html>
